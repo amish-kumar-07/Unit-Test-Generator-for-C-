@@ -72,11 +72,7 @@ cmake -DCODE_COVERAGE=ON ..
 cmake --build .
 ./unit_tests
 
-lcov --capture --directory . --output-file coverage.info
-genhtml coverage.info --output-directory coverage-report
 ```
-
-Open: `coverage-report/index.html` in your browser.
 
 ---
 
