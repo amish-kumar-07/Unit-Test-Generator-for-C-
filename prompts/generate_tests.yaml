@@ -1,39 +1,69 @@
-name: "C++ Test & Fix Suite"
-description: "Engine to fix C++ build errors, generate and refine GoogleTest unit tests"
-version: "1.0"
+name: "C++ Smart Test Pipeline"
+description: "Pipeline to generate, refine, and fix GoogleTest unit tests using LLMs and strict YAML instructions"
+version: "2.0"
 
-test_rules:
-  task: "Generate unit tests"
-  language: "C++"
-  framework: "gtest"
-  avoid_duplicates: true
-  include_headers: true
-  coverage_target: 90%
-  format_style: clean
-  rules:
-    - Use TEST() / TEST_F macros
-    - Test each public function
-    - Mock external dependencies
+pipeline_stages:
+  - stage: "Refactor Stage"
+    purpose: "Prepare clean input for test generation"
+    input:
+      - "C++ source file"
+      - "Existing test_main.cpp (if any)"
+      - "Strict YAML prompt (refactor instructions)"
+    instructions:
+      - "Analyze the C++ code and make it easier to test."
+      - "Refactor only as needed to enable better unit test generation."
+      - "Preserve logic and ensure the output is still valid C++."
+      - "Do not output duplicate functions or explanations."
+    output: "Refactored source code suitable for unit testing."
 
-CRITICAL_OUTPUT_RULES:
-  - "PURE C++ ONLY"
-  - "NO markdown or explanations"
-  - "START with #include or #pragma once"
-  - "END with closing brace of main()"
-  - "DIRECTLY COMPILABLE CODE"
+  - stage: "Unit Test Generation"
+    purpose: "Generate initial unit tests using GoogleTest"
+    input:
+      - "Refactored C++ file"
+      - "Strict YAML test generation rules"
+    instructions:
+      - "Generate unit tests for all public methods and functions."
+      - "Use TEST() and TEST_F() macros as needed."
+      - "Avoid duplicate tests and ensure relevant libraries are included."
+      - "Ensure tests are directly compilable with no markdown or prose."
+    output: "test_main.cpp with clean, structured, non-redundant tests."
 
-components:
-  - name: "Build Fixer"
-    instructions:
-      - Fix common syntax, header, linking, and type errors
-      - Apply C++17+ best practices
-  - name: "Unit Test Generator"
-    instructions:
-      - Parse classes/functions
-      - Use GoogleTest format
-      - Name test file: test_main.cpp
-  - name: "Test Refiner"
-    instructions:
-      - Improve coverage and assertions
-      - Add edge cases, fixtures, mocking
-      - Keep tests clean and repeatable
+  - stage: "Build & Validation"
+    purpose: "Run tests, collect build results, and handle broken tests"
+    steps:
+      - "Compile test_main.cpp"
+      - "If build fails, send logs + source + test file to LLM for fixing."
+      - "Repeat fix cycle until build passes or timeout reached."
+      - "Once build passes, run tests and collect coverage data."
+    retry_logic:
+      - on_failure: "Send logs, broken tests, and full context to LLM for diagnosis and fixes"
+      - max_retries: 3
+    output:
+      - "Passed unit tests"
+      - "Test coverage report"
+      - "Final validated test_main.cpp"
+
+rules:
+  general:
+    - "No markdown, explanations, or non-code output"
+    - "Output must begin with #include or #pragma once"
+    - "Output must end with closing brace of main() if present"
+    - "All libraries must be included"
+    - "No duplicated test logic or redundant assertions"
+    - "Tests should cover success, edge, and failure cases"
+    - "Prefer modern C++17 or newer"
+  formatting:
+    - "Follow clean code formatting"
+    - "Use descriptive test names"
+    - "Group related tests in fixtures"
+    - "Mock external dependencies where needed"
+
+tools:
+  - name: "GoogleTest"
+    use: "Primary unit test framework"
+  - name: "LLVM/GCC"
+    use: "Build tools for C++ compilation"
+  - name: "gcov/lcov"
+    use: "Code coverage reporting"
+  - name: "LLM (LLaMA3)"
+    use: "Generate/refine/fix tests and code via prompt+YAML instructions"
