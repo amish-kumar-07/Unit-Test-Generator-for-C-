@@ -13,12 +13,10 @@ This project demonstrates how to write and run unit tests for C++ using the [Goo
 ├── src/
 │   └── main.cpp
 ├── tests/
-│   └── test\_main.cpp
+│   └── test_main.cpp
 ├── include/
-├── third\_party/
+├── third_party/
 │   └── googletest/
-├── docs/
-│   └── coverage.png
 └── README.md
 
 ````
