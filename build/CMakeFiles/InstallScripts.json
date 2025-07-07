@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"/c/Users/KIIT/OneDrive/Desktop/Assignment/orgChartApi/unit-test-generator/build/cmake_install.cmake",
+		"/c/Users/KIIT/OneDrive/Desktop/Assignment/orgChartApi/unit-test-generator/build/third_party/googletest/cmake_install.cmake",
+		"/c/Users/KIIT/OneDrive/Desktop/Assignment/orgChartApi/unit-test-generator/build/third_party/googletest/googlemock/cmake_install.cmake",
+		"/c/Users/KIIT/OneDrive/Desktop/Assignment/orgChartApi/unit-test-generator/build/third_party/googletest/googletest/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

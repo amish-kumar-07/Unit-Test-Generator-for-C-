@@ -1,0 +1,39 @@
+name: "C++ Test & Fix Suite"
+description: "Engine to fix C++ build errors, generate and refine GoogleTest unit tests"
+version: "1.0"
+
+test_rules:
+  task: "Generate unit tests"
+  language: "C++"
+  framework: "gtest"
+  avoid_duplicates: true
+  include_headers: true
+  coverage_target: 90%
+  format_style: clean
+  rules:
+    - Use TEST() / TEST_F macros
+    - Test each public function
+    - Mock external dependencies
+
+CRITICAL_OUTPUT_RULES:
+  - "PURE C++ ONLY"
+  - "NO markdown or explanations"
+  - "START with #include or #pragma once"
+  - "END with closing brace of main()"
+  - "DIRECTLY COMPILABLE CODE"
+
+components:
+  - name: "Build Fixer"
+    instructions:
+      - Fix common syntax, header, linking, and type errors
+      - Apply C++17+ best practices
+  - name: "Unit Test Generator"
+    instructions:
+      - Parse classes/functions
+      - Use GoogleTest format
+      - Name test file: test_main.cpp
+  - name: "Test Refiner"
+    instructions:
+      - Improve coverage and assertions
+      - Add edge cases, fixtures, mocking
+      - Keep tests clean and repeatable
